@@ -1,0 +1,68 @@
+<html>
+
+<head>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, 
+                                   initial-scale=1" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <title>Overall perfomance</title>
+</head>
+
+<body>
+    <canvas id="bar-chart" width="800" height="450"> </canvas>
+    <script>
+        getData();
+
+        async function getData() {
+            const response = await fetch(
+                "http://127.0.0.1:8000/api/players-list"
+            );
+            console.log(response);
+            const data = await response.json();
+            console.log(data);
+            
+            data.sort()
+
+            labels = [];
+            values = [];
+            for (i = 0; i < data.length; i++) {
+                labels.push(data[i].Name);
+                values.push(data[i].Overall);
+            }
+            
+            var topValues = values.sort((a,b) => b-a).slice(0,5);
+
+            new Chart(document.getElementById("bar-chart"), {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Overall ",
+                            backgroundColor: [
+                                "#3e95cd",
+                                "#8e5ea2",
+                                "#3cba9f",
+                                "#e8c3b9",
+                                "#c45850",
+                                "#CD5C5C",
+                                "#40E0D0",
+                            ],
+                            data: topValues,
+                        },
+                    ],
+                },
+                options: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: "Overall performance of Players",
+                    },
+                },
+            });
+        }
+    </script>
+</body>
+
+</html>
